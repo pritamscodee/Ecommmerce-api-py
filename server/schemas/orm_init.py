@@ -9,7 +9,8 @@ database_url=os.getenv("database_url")
 
 engine = create_engine(database_url,echo=True)
 
-Base=DeclarativeBase()
+class Base(DeclarativeBase):
+    pass
 
 SessionLocal=sessionmaker(bind=engine)
 session=SessionLocal()

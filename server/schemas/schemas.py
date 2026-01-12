@@ -1,17 +1,16 @@
-from orm_init import Base
-from sqlalchemy import Column,Integer,String, Mapped, mapped_column, relationship
-
+from orm_init import Base,engine
+from sqlalchemy import Integer, String, Boolean, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 class Customer(Base):
-    id=Mapped[int]=mapped_column(Integer,primary_key=True)
-    address=Mapped[str]=mapped_column(String)
-    city=Mapped[str]=mapped_column(String)
-    phone_number=Mapped[int]=mapped_column(Integer)
-    reviews=Mapped[str]=mapped_column(String)
+    __tablename__ = "customers"
+    id:Mapped[int]=mapped_column(Integer,primary_key=True)
+    address:Mapped[str]=mapped_column(String)
+    city:Mapped[str]=mapped_column(String)
+    phone_number:Mapped[int]=mapped_column(Integer)
+    reviews:Mapped[str]=mapped_column(String)
 
-    Added_cart:Mapped["Cart"]=relationship(
-         back_populates="customer_cart"
-
-    )
+    Added_cart:Mapped[List["Cart"]]=relationship(
+         back_populates="customer_cart" )
 
     Buied_items:Mapped["Buieditems"]=relationship(
            back_populates="customer_buied"
@@ -19,25 +18,32 @@ class Customer(Base):
 
     
 class Cart(Base):
-    item_id=Mapped[int]=mapped_column(Integer)
-    item_name=Mapped[str]=mapped_column(String)
-    item_price=Mapped[int]=mapped_column(Integer)
-    item_Instock=Mapped[bool]=mapped_column(bool)
+    __tablename__ = "carts"
+    item_id:Mapped[int]=mapped_column(Integer,primary_key=True)
+    item_name:Mapped[str]=mapped_column(String)
+    item_price:Mapped[int]=mapped_column(Integer)
+    customer_id: Mapped[int] = mapped_column(ForeignKey("customers.id"))
+    item_Instock:Mapped[bool]=mapped_column(Boolean)
 
     customer_cart:Mapped["Customer"]=relationship(
-        back_populates=" Added_cart"
+        back_populates="Added_cart"
     ) 
      
 
 
 class Buieditems(Base):
-    item_id=Mapped[int]=mapped_column(Integer)
-    item_name=Mapped[str]=mapped_column(String)
-    item_price=Mapped[int]=mapped_column(Integer)
+    __tablename__ = "buyiedItems"
+    item_id:Mapped[int]=mapped_column(Integer,primary_key=True)
+    customer_id: Mapped[int] = mapped_column(ForeignKey("customers.id"))
+    item_name:Mapped[str]=mapped_column(String)
+    item_price:Mapped[int]=mapped_column(Integer)
 
     customer_buied:Mapped["Customer"]=relationship(
         back_populates="Buied_items"
     ) 
 
 
-
+#-----------------------db creation--------------------------#
+Base.metadata.create_all(bind=engine)
+print("Tables created successfully!🚀🔥✅🎯🥳🎉💪")
+#---------------------------------------------------------------#
