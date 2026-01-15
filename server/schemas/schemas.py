@@ -1,5 +1,5 @@
 from orm_init import Base,engine
-from sqlalchemy import Integer, String, Boolean, ForeignKey
+from sqlalchemy import Integer, String, Boolean, ForeignKey,List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 class Customer(Base):
     __tablename__ = "customers"
